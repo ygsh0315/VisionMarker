@@ -289,4 +289,4 @@ def checkImg(key, x=100, y=100):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-checkImg("Z")
+#checkImg("K")
