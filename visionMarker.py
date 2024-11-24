@@ -90,18 +90,12 @@ def VisionDetect(img):
     received_img_blur = cv2.GaussianBlur(received_img, (7, 7), 10)
     # inRange 메서드를 사용하기 위해 hsv로 변환
     img_hsv = cv2.cvtColor(received_img_blur, cv2.COLOR_BGR2HSV)
-    # marker 색상 범위에 해당는 영역 이진 mask로 반환
+    # marker 색상 범위에 해당하면 
     mask = cv2.inRange(img_hsv, np.array([95, 215, 210], dtype=np.uint8), np.array([105, 220, 215], dtype=np.uint8))
-    # mask에 해당하는 영역만 원본 이미지에 출력
     res = cv2.bitwise_and(received_img, received_img, mask=mask)
-    # gray로 변환
     res_gray = cv2.cvtColor(res, cv2.COLOR_BGR2GRAY)
-    # 이진 이미지로 변환
     _, res_bin = cv2.threshold(res_gray, 100, 255, cv2.THRESH_BINARY)
-    # contour 검출
     contours, _ = cv2.findContours(res_bin, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-    # 곧 폐기할 예정인 코드 (여러 마커 인식하려면 largest 못 쓴다.)
     largest_contour = max(contours, key=cv2.contourArea)
     x, y, w, h = cv2.boundingRect(largest_contour)
     marker_img = received_img[y:y+h, x:x+w]
