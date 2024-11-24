@@ -2,8 +2,9 @@ import cv2
 import numpy as np
 import VisionMarker as vm
 
-cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)
+cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 vmd = vm.VisionMarker()
+vmd.setTrackbar()
 
 while True:
     ret, frame = cap.read()
