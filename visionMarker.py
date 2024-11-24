@@ -3,6 +3,14 @@ import cv2
 import VisionMarkerLibrary as vml
 
 class VisionMarker:
+    def callback(x):
+        minHSV[0] = cv2.getTrackbarPos('minH', 'Settings')
+        maxHSV[0] = cv2.getTrackbarPos('maxH', 'Settings')
+        minHSV[1] = cv2.getTrackbarPos('minS', 'Settings')
+        maxHSV[1] = cv2.getTrackbarPos('maxS', 'Settings')
+        minHSV[2] = cv2.getTrackbarPos('minV', 'Settings')
+        maxHSV[2] = cv2.getTrackbarPos('maxV', 'Settings')
+
     #마커 배경 색상 지정 함수
     def SetMarker(self, key, bgr):
         array = vml.vm_dict[key]
@@ -58,62 +66,6 @@ class VisionMarker:
             
         return marker_list
 
-    # def hsv_distance(self, pixel_hsv, target_hsv):
-    #     return np.linalg.norm(pixel_hsv - target_hsv)
-
-
-    # def testVisionDetect(self, img):  
-    #     #1. 영상을 불러온다.(이미지를 불러온다.)
-    #     received_img = img
-    #     #1.1 이미지 크기가 크니까 사이즈를 축소한다.
-    #     # received_img = cv2.resize(received_img, (0,0), fx=0.3, fy=0.3, interpolation=cv2.INTER_LINEAR)
-    #     #1.2 노이즈를 제거한다.
-    #     # received_img_blur = cv2.GaussianBlur(received_img, (5, 5), 10)
-    #     # inRange 메서드를 사용하기 위해 hsv로 변환
-    #     img_hsv = cv2.cvtColor(received_img, cv2.COLOR_BGR2HSV)
-
-    #     target_hsv = np.array([100, 80, 200], dtype=np.float32)
-
-    #     closest_hsv = None
-    #     min_distance = float('inf')
-
-    #     for y in range(img_hsv.shape[0]):
-    #         for x in range(img_hsv.shape[1]):
-    #             pixel_hsv = img_hsv[y, x].astype(np.float32)
-    #             distance = self.hsv_distance(pixel_hsv, target_hsv)
-    #             if distance < min_distance:
-    #                 min_distance = distance
-    #                 closest_hsv = pixel_hsv
-        
-    #     res = closest_hsv
-
-    #     # marker 색상 범위에 해당하면 
-    #     mask = cv2.inRange(img_hsv, res-10, res+10)
-    #     # res = cv2.bitwise_and(received_img, received_img, mask=mask)
-    #     # res_gray = cv2.cvtColor(res, cv2.COLOR_BGR2GRAY)
-    #     # _, res_bin = cv2.threshold(res_gray, 100, 255, cv2.THRESH_BINARY)
-    #     # contours, _ = cv2.findContours(res_bin, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    #     # # cv2.drawContours(received_img, contours, -1, (0,0,255), 3)
-    #     # # cv2.imshow('test', received_img)
-    #     # # cv2.waitKey(10000)
-    #     # # cv2.destroyAllWindows
-    #     # lst = []
-    #     # for ct in contours:
-    #     #     x, y, w, h = cv2.boundingRect(ct)
-    #     #     lst.append(received_img[y:y+h, x:x+w])
-
-
-    #     #3. ROI를 정사각형 모양으로 보정한다.
-    #     #4. 보정한 정사각형 모양의 ROI에 대해, CompareImg를 수행한다.        
-
-    #     return mask
-
-    
-
-
-
-
-
     def VisionDetect(self, img):  
         #1. 영상을 불러온다.(이미지를 불러온다.)
         received_img = img
@@ -124,7 +76,8 @@ class VisionMarker:
         # inRange 메서드를 사용하기 위해 hsv로 변환
         img_hsv = cv2.cvtColor(received_img_blur, cv2.COLOR_BGR2HSV)
         # marker 색상 범위에 해당하면
-        mask = cv2.inRange(img_hsv, np.array([50, 100, 100], dtype=np.uint8), np.array([150, 255, 255], dtype=np.uint8))
+        # mask = cv2.inRange(img_hsv, np.array([50, 100, 100], dtype=np.uint8), np.array([150, 255, 255], dtype=np.uint8))
+        mask = cv2.inRange(img_hsv, np.array([70, 70, 70], dtype=np.uint8), np.array([200, 150, 255], dtype=np.uint8))
         res = cv2.bitwise_and(received_img, received_img, mask=mask)
         res_gray = cv2.cvtColor(res, cv2.COLOR_BGR2GRAY)
         _, res_bin = cv2.threshold(res_gray, 100, 255, cv2.THRESH_BINARY)
@@ -169,10 +122,3 @@ class VisionMarker:
 
         # 처리된 ROI 목록과 마스크, 결과 이미지 반환
         return lst, mask, res
-
-
-        #3. ROI를 정사각형 모양으로 보정한다.
-        #4. 보정한 정사각형 모양의 ROI에 대해, CompareImg를 수행한다.        
-
-        return lst, mask, res
-                                                                                
