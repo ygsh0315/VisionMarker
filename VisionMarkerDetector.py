@@ -13,10 +13,9 @@ while True:
     if not ret:
         print("Can't open the Camera")
         
-    cv2.imshow('marker', lst[0])
     cv2.imshow('mask', mask)
     cv2.imshow('Contour', contour)
-
+    cv2.imshow('cam',frame)
     print(marker_lst)
 
     k = cv2.waitKey(1)

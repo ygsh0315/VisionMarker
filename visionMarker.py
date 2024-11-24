@@ -136,7 +136,8 @@ class VisionMarker:
         lst = []
         for ct in contours:
             x, y, w, h = cv2.boundingRect(ct)
-
+            cv2.drawContours(res, ct, -1, (0, 255, 0), 2)
+            cv2.rectangle(res, (x, y), (x+w, y+h), (0, 0, 255), 2)
             # 컨투어 근사화
             epsilon = 0.02 * cv2.arcLength(ct, True)
             approx = cv2.approxPolyDP(ct, epsilon, True)
