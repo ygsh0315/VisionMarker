@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 import VisionMarkerLibrary as vml
-
+import time
 class VisionMarker:
     # 생성자 함수, track bar 초기값 설정
     def __init__(self):
@@ -43,7 +43,7 @@ class VisionMarker:
 
             return sorted_pts
     # 컨투어 검출 함수
-    def VisionDetect(self, img):
+    def ContourDetect(self, img):
         # 1. 노이즈 제거 및 색상 추출
         img_blur = cv2.GaussianBlur(img, (3, 3), 10)
         img_hsv = cv2.cvtColor(img_blur, cv2.COLOR_BGR2HSV)
@@ -121,4 +121,11 @@ class VisionMarker:
         cv2.drawContours(img, contours, -1, (0, 0, 255), 3)
 
         return marker_list
+    #마커 검출 함수
+    def VisionMarkerDetect(self,frame):
+        lst, mask, contour, valid_contours = self.ContourDetect(frame)
+        marker_lst = self.CompareImg(lst, valid_contours, frame)
+        return mask, contour, marker_lst
+
+
     

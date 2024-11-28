@@ -278,14 +278,9 @@ vm_dict={
 
 
 def checkImg(key, x=100, y=100):
-
-    # 이미지 확대
     img_resized = cv2.resize(vm_dict[key]*255, (0, 0), fx=x, fy=y, interpolation=cv2.INTER_NEAREST)
 
-    # OpenCV 윈도우에 이미지 띄우기
     cv2.imshow("Resized Binary Image", img_resized)
-
-    # 키 입력 대기 후 창 닫기
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 

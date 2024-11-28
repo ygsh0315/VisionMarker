@@ -7,13 +7,11 @@ cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 vmd = vm.VisionMarker()
 vmd.setTrackbar()
 prev_time = time.time()
-fps_display_interval = 0.5
 fps_counter = 0
 fps = 0
-while True:
-    ret, frame = cap.read()
-    lst, mask, contour, valid_contours = vmd.VisionDetect(frame)
-    marker_lst = vmd.CompareImg(lst, valid_contours, frame)
+def checkFrame(interval):
+    global fps_counter, prev_time, fps
+    fps_display_interval = interval
     current_time = time.time()
     fps_counter += 1
     if current_time - prev_time >= fps_display_interval:
@@ -21,8 +19,12 @@ while True:
         prev_time = current_time
         fps_counter = 0
     fps_text = f'FPS : {int(fps)}'
-    w, h, ch = frame.shape
-    cv2.putText(frame, fps_text, (w, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+    cv2.putText(frame, fps_text, (40, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+
+while True:
+    ret, frame = cap.read()
+    mask, contour, marker_lst=vmd.VisionMarkerDetect(frame)
+    checkFrame(0.5)
     if not ret:
         print("Can't open the Camera")
     cv2.imshow('Detected Markers', frame)
@@ -33,3 +35,4 @@ while True:
        break
 cap.release()
 cv2.destroyAllWindows()
+
