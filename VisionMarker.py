@@ -3,6 +3,7 @@ import cv2
 import VisionMarkerLibrary as vml
 
 class VisionMarker:
+    # 생성자 함수, track bar 초기값 설정
     def __init__(self):
         # 초기 HSV 범위 설정
         self.minH, self.maxH = 127, 205
@@ -10,7 +11,7 @@ class VisionMarker:
         self.minV, self.maxV = 73, 255
         self.minHSV = np.array([self.minH, self.minS, self.minV])
         self.maxHSV = np.array([self.maxH, self.maxS, self.maxV])
-
+    # 트랙바 생성
     def setTrackbar(self):
         cv2.namedWindow('Settings')
         cv2.createTrackbar('minH', 'Settings', self.minH, 255, self.callback)
@@ -19,7 +20,7 @@ class VisionMarker:
         cv2.createTrackbar('maxS', 'Settings', self.maxS, 255, self.callback)
         cv2.createTrackbar('minV', 'Settings', self.minV, 255, self.callback)
         cv2.createTrackbar('maxV', 'Settings', self.maxV, 255, self.callback)
-
+    # 트랙바 callback
     def callback(self, x):
         # 트랙바 값으로 HSV 범위 업데이트
         self.minHSV[0] = cv2.getTrackbarPos('minH', 'Settings')
@@ -28,7 +29,20 @@ class VisionMarker:
         self.maxHSV[1] = cv2.getTrackbarPos('maxS', 'Settings')
         self.minHSV[2] = cv2.getTrackbarPos('minV', 'Settings')
         self.maxHSV[2] = cv2.getTrackbarPos('maxV', 'Settings')
+    # 근사화 좌표 정렬
+    def sortPoints(self, points):
+            # 좌표 정렬: 왼쪽 위, 오른쪽 위, 오른쪽 아래, 왼쪽 아래
+            sorted_pts = np.zeros((4, 2), dtype=np.float32)
+            s = points.sum(axis=1)
+            diff = np.diff(points, axis=1)
 
+            sorted_pts[0] = points[np.argmin(s)]
+            sorted_pts[2] = points[np.argmax(s)]
+            sorted_pts[1] = points[np.argmin(diff)]
+            sorted_pts[3] = points[np.argmax(diff)]
+
+            return sorted_pts
+    # 컨투어 검출 함수
     def VisionDetect(self, img):
         # 1. 노이즈 제거 및 색상 추출
         img_blur = cv2.GaussianBlur(img, (3, 3), 10)
@@ -74,24 +88,8 @@ class VisionMarker:
 
         # 처리된 ROI 목록과 마스크, 결과 이미지 반환
         res = cv2.bitwise_and(img, img, mask=mask)
-        return lst, mask, res, valid_contours  # 컨투어 추가 반환
-
-
-
-
-    def sortPoints(self, points):
-        # 좌표 정렬: 왼쪽 위, 오른쪽 위, 오른쪽 아래, 왼쪽 아래
-        sorted_pts = np.zeros((4, 2), dtype=np.float32)
-        s = points.sum(axis=1)
-        diff = np.diff(points, axis=1)
-
-        sorted_pts[0] = points[np.argmin(s)]
-        sorted_pts[2] = points[np.argmax(s)]
-        sorted_pts[1] = points[np.argmin(diff)]
-        sorted_pts[3] = points[np.argmax(diff)]
-
-        return sorted_pts
-
+        return lst, mask, res, valid_contours  # 컨투어 추가 반환  
+    # 이미지와 딕셔너리 비교, 마커 검출 함수
     def CompareImg(self, lst, contours, img):
         marker_list = []
         for img_roi in lst:
@@ -123,3 +121,4 @@ class VisionMarker:
         cv2.drawContours(img, contours, -1, (0, 0, 255), 3)
 
         return marker_list
+    

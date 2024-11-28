@@ -12,6 +12,7 @@ def SaveMarker(key, bgr, path):
     bgr_marker = cv2.resize(bgr_marker, (0, 0), fx=100, fy=100, interpolation=cv2.INTER_NEAREST)
     cv2.imwrite(path, bgr_marker)
 
-
 for key in vml.vm_dict:
-    vmd.SaveMarker(key, (100, 103, 247), f'Markers/{key}#F767B1.jpg')
+    #파일명 유의
+    SaveMarker(key, (80, 80, 80), f'Markers/{key}#505050.jpg')
+    
